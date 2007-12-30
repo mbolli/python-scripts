@@ -1,7 +1,15 @@
 #!/usr/bin/env python
-
+#
+# todo: 
+# - eventually option for closing the line between two groups
+# - waypoints
+# - gnuplotting (each group separate color)
+#
 import re
 from sys import argv
+from optparse import OptionParser
+
+VERSION = '0.1'
 
 def parseMXMap(filename):
     """Parses data from gpstrans in mxmap-format"""
@@ -58,6 +66,7 @@ def generatePlacemarks(data, name):
         pm = '<Placemark>\n'
         pm += '<name>' + name + '-' + str(count) + '</name>\n'
         pm += '<visibility>1</visibility>\n'
+        pm += '<styleUrl>style_' + name + '</styleUrl>\n'
         pm += '<LineString>\n'
         pm += '<tessellate>1</tessellate>\n'
         pm += '<altitudeMode>clampToGround</altitudeMode>\n'
@@ -79,23 +88,45 @@ def generateKMLDocument(placemarks, name, datefromstring=None, datetostring=None
         doc += 'GPS data captured between ' + datefromstring + ' and ' + \
                 datetostring + '.'
     doc += '</description>\n\n'
+    doc += '<Style id="style_' + name + '">\n'
+    doc += '<LineStyle><color>bfff0000</color><width>2</width></LineStyle>\n'
+    doc += '</Style>\n\n'
+	
     for placemark in  placemarks:
         doc += placemark
     return doc + '</Document>\n'
 
+def parseAndGenerate(gpsdata, kmlfile):
+    """Parses a file containing gps-data, generates kml-xml and writes it to a file"""
 
-data = parseMXMap(argv[1])
-pms = generatePlacemarks(data, 'test')
+    data = parseMXMap(gpsdata)
+    if kmlfile.endswith('.kml'):
+        name = kmlfile[:-4]
+    else:
+        name = kmlfile
 
-if len(data) > 1:
-    datefrom = str(data[0][0][3]) + '/' + str(data[0][0][4])
-    last = len(data) - 1
-    dateto = str(data[last][len(data[last])-1][3]) + ' ' + str(data[last][len(data[last])-1][4])
-    doc = generateKMLDocument(pms, 'test', datefrom, dateto)
-else:    
-    doc = generateKMLDocument(pms, 'test')
+    pms = generatePlacemarks(data, name)
 
-file = open('/tmp/test.kml','w')
-file.write(doc)
-file.close()
+    if len(data) > 1:
+        datefrom = str(data[0][0][3]) + '/' + str(data[0][0][4])
+        last = len(data) - 1
+        dateto = str(data[last][len(data[last])-1][3]) + ' ' + str(data[last][len(data[last])-1][4])
+        doc = generateKMLDocument(pms, name, datefrom, dateto)
+    else:    
+        doc = generateKMLDocument(pms, name)
 
+    file = open(kmlfile,'w')
+    file.write(doc)
+    file.close()
+
+if __name__ == "__main__":
+    """Parses commandline arguments and dispatches them"""
+
+    parser = OptionParser(usage='%prog [options] gpsdata kmlfile', version='%prog ' + VERSION)
+    #parser.add_option('-r', '--recursive', help='Do it recursively, baby! Default: no', action='store_true', default=False)
+    (options, args) = parser.parse_args(argv)
+ 
+    if len(args) < 3:
+        parser.error('You must at least specify a file containing gps-data and the name of the file to generate')
+
+    parseAndGenerate(args[1], args[2])
