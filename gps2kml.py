@@ -208,6 +208,51 @@ def parseGpsman(filename):
 
     file.close()
     return data
+    
+def parseWaypoint(filename):
+    """Parses data in gpstrans' waypoint-format. See data structure description on top
+       of this file."""
+
+    # Groups: name, altitude, latitude, longitude
+    regexp = re.compile('^W\s+(.*)([-|\d+]\.\d+)\s+m\s+([-|\d]+.\d+.\d+.\d+)"\s+([-|\d]+.\d+.\d+.\d+).*')
+    coordreg = re.compile('(\d+).(\d+).(\d+\.\d).*')
+    data = []
+    group = []
+    last = None
+    file = open(filename, 'r')
+    for line in file:
+        match = regexp.match(line)
+        if match is not None:
+            cmatch = coordreg.match(match.group(3))
+            lat = float(cmatch.group(1))
+            lat += (float(cmatch.group(2)) * 60 + float(cmatch.group(3)))/3600
+
+            cmatch = coordreg.match(match.group(4))
+            long = float(cmatch.group(1))
+            long += (float(cmatch.group(2)) * 60 + float(cmatch.group(3)))/3600
+
+            name = match.group(1)
+            i = len(name)-1
+            while i >= 0:
+                if not name[i].isspace():
+                    break
+                else:
+                    i -= 1
+            name = name[:i+1]
+
+            last = (name, str(lat), str(long), match.group(2),\
+                None, None)
+            group.append(last)
+        else:
+            if line.isspace() and len(group) > 0:
+                data.append(group)
+                group = []
+
+    if len(group) > 0:
+        data.append(group)
+
+    file.close()
+    return data
 
 
 ##############################################################################
@@ -255,8 +300,13 @@ def plot(data, outfile):
             g('set terminal png medium size 800,600')
 
     plotitems = []
+    if options.waypoint:
+        style = "point"
+    else:
+        style = "lines"
+
     for group in plotdata:
-        plotitems.append(Gnuplot.PlotItems.Data(group, with="lines"))
+        plotitems.append(Gnuplot.PlotItems.Data(group, with=style))
     g.plot(*plotitems)
 
 
@@ -268,19 +318,28 @@ def generateStyles(name, count):
     """Generates styles according to color-options"""
 
     stylestring = ''
-    if options.rainbow or options.bicolor:
-        colors = generateColors(count)
-        counter = 1
-        for color in colors:
-            colorstring = 'ff%02x%02x%02x' % (color[2]*255, color[1]*255, color[0]*255)
-            stylestring += '<Style id="style_' + name + '_' + str(counter) + '">\n'
-            stylestring += '<LineStyle><color>' + colorstring + '</color><width>2</width></LineStyle>\n'
-            stylestring += '</Style>\n\n'
-            counter += 1
-    else:
+    if options.waypoint:
         stylestring += '<Style id="style_' + name + '">\n'
-        stylestring += '<LineStyle><color>ffff0000</color><width>2</width></LineStyle>\n'
+        stylestring += '<IconStyle>\n'
+        stylestring += '<scale>1.1</scale>\n'
+        stylestring += '<Icon><href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href></Icon>\n'
+        stylestring += '<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>\n'
+        stylestring += '</IconStyle>\n'
         stylestring += '</Style>\n\n'
+    else:
+        if options.rainbow or options.bicolor:
+            colors = generateColors(count)
+            counter = 1
+            for color in colors:
+                colorstring = 'ff%02x%02x%02x' % (color[2]*255, color[1]*255, color[0]*255)
+                stylestring += '<Style id="style_' + name + '_' + str(counter) + '">\n'
+                stylestring += '<LineStyle><color>' + colorstring + '</color><width>2</width></LineStyle>\n'
+                stylestring += '</Style>\n\n'
+                counter += 1
+        else:
+            stylestring += '<Style id="style_' + name + '">\n'
+            stylestring += '<LineStyle><color>ffff0000</color><width>2</width></LineStyle>\n'
+            stylestring += '</Style>\n\n'
 
     return stylestring
 
@@ -316,6 +375,25 @@ def generatePlacemarks(data, name):
         placemarks.append(pm)
     return placemarks
 
+def generatePlacemarksWP(data, name):
+    """Generates a list of strings, each containing a placemark for each waypoint"""
+
+    placemarks = []
+    for group in data:
+        for entry in group:
+            pm = '<Placemark>\n'
+            pm += '<name>' + entry[0] + '</name>\n'
+            pm += '<visibility>1</visibility>\n'
+            pm += '<styleUrl>style_' + name + '</styleUrl>\n'
+            pm += '<Point>\n'
+            pm += '<tessellate>1</tessellate>\n'
+            pm += '<altitudeMode>clampToGround</altitudeMode>\n'
+            pm += '<coordinates>' + entry[2] + ',' + entry[1] + ',' + entry[3] + '</coordinates>\n'
+            pm += '</Point>\n'
+            pm += '</Placemark>\n\n'
+            placemarks.append(pm)
+    return placemarks
+
 def generateKML(data, filename):
     """Generates a KML-File"""
 
@@ -324,7 +402,11 @@ def generateKML(data, filename):
     else:
         name = filename
 
-    placemarks = generatePlacemarks(data, name)
+    if options.waypoint:
+        placemarks = generatePlacemarksWP(data, name)
+    else:
+        placemarks = generatePlacemarks(data, name)
+
     times = calculateOverallTime(data)
 
     doc = '<?xml version="1.0" encoding="UTF-8"?>\n\n'
@@ -362,18 +444,24 @@ if __name__ == "__main__":
     parser.add_option('-p', '--plot', help='plot data using gnuplot as png. needs python-gnuplot.', action='store_true', default=False)
     parser.add_option('-r', '--rainbow', help='use different color for each segment. png-plots and kml only.', action='store_true', default=False)
     parser.add_option('-s', '--svg', help='use svg output for plot (-p).', action='store_true', default=False)
+    parser.add_option('-w', '--waypoint', help='input data is waypoint-format from gpstrans', action='store_true', default=False)
     (options, args) = parser.parse_args(argv)
 
     if len(args) < 3:
         parser.error('You must at least specify a file containing gps-data and the name of the file to generate')
-
     if (options.svg and options.rainbow) or (options.svg and options.bicolor):
         print 'Ignoring color-option when plotting SVG as not possible with GNUplot!'
+    if (options.waypoint and options.rainbow) or (options.waypoint and options.bicolor):
+        print 'Note: rainbow and bicolor don\'t work with waypoint data!'
+    if options.waypoint and options.join:
+        print 'Ignoring join-option when in waypoint-mode!'
 
     if options.mxmap:
         data = parseMXMap(args[1])
     elif options.gpsman:
         data = parseGpsman(args[1])
+    elif options.waypoint:
+        data = parseWaypoint(args[1])
     else:
         data = parseGpsTrans(args[1])
 
