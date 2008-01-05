@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# todo: 
-# - waypoints
-#
 # Workflow and Data structures
 # ============================
 # 
