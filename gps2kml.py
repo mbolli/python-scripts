@@ -34,6 +34,8 @@
 # Data is then fed into one of the handling methods for generating either
 # a KML-file or plotting the data with GNUPlot
 #
+# Multi-segment-patch for gpsman-format by Alexis Domjan - adomjan <at> horus <dot> ch
+#
 
 import re
 from colorsys import hsv_to_rgb
@@ -179,6 +181,7 @@ def parseGpsman(filename):
 
     # Groups: altitude, latitude, longitude, unixtime
     regexp = re.compile('^.*altitude="([-|\d]+)"\s+latitude="\s*([-|\d]+\.\d+)"\s+longitude="\s*([-|\d]+\.\d+)"\s+unixtime="(\d+)".*')
+    newseg = re.compile('.*newsegment="yes"');
 
     data = []
     group = []
@@ -186,6 +189,13 @@ def parseGpsman(filename):
     file = open(filename, 'r')
     for line in file:
         match = regexp.match(line)
+        nmatch = newseg.match(line)
+
+        if nmatch is not None:
+            if len(group) > 0:
+                data.append(group)
+                group = []
+
         if match is not None:
             then = datetime.fromtimestamp(float(match.group(4)))
             thendate = then.strftime('%m/%d/%Y')
@@ -193,12 +203,6 @@ def parseGpsman(filename):
             last = (None, match.group(2), match.group(3), match.group(1),\
                 thendate, thentime)
             group.append(last)
-        else:
-            if line.isspace() and len(group) > 0:
-                data.append(group)
-                group = []
-                if options.join:
-                    group.append(last)
 
     if len(group) > 0:
         data.append(group)
