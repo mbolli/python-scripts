@@ -1,6 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+#
+# Future improvments:
+# - make targets specifiable via cmd-line
+# - directly send mail, possible template:
+# 
+#Hello!
+#
+#we have recently (or not so) personally met and verified our keys
+#for keysigning. In order to sign your key, I need a proof that
+#the email-address on each uid of your key is valid and can be read
+#by you. Please decrypt the attached challenge(s) and send me
+#back the contained challenge-string in a signed mail.
+#
+#Thanks and kind regards!
+#
+#Pascal
+#
+
 import gpgme
 import subprocess
 from StringIO import StringIO
