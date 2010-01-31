@@ -13,6 +13,7 @@
 #the email-address on each uid of your key is valid and can be read
 #by you. Please decrypt the attached challenge(s) and send me
 #back the contained challenge-string in a signed mail.
+#I will not publish the signed key(s) but only send them back to you.
 #
 #Thanks and kind regards!
 #
