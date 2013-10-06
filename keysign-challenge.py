@@ -24,7 +24,7 @@ import gpgme
 import subprocess
 from StringIO import StringIO
 
-my_key = 'E284ED60'
+my_key = 'A9A71917D900A399'
 targets = ['DEADBEEF']
 values = {}
 
