@@ -28,7 +28,6 @@ if __name__ == "__main__":
         print "Usage: " + argv[0] + " inode-list device destination"
         exit(0)
     else:
-        #14     8397  Oct 13 19:45 2007 * application/x-gzip
         regexp = re.compile("\s+(\d+)\s+\d+\s+.+\s\d+\s\d+:\d+\s\d+\s.\s(.*)")
 
         inodes = {}
