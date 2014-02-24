@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# A script for parsing data out of gpsman-files as well as some
+# A script for parsing data out of garmin gps-files as well as some
 # helper functions
 #
 # Copyright (C) 2007,2008, Pascal Mainini <http://mainini.ch>

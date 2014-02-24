@@ -9,7 +9,7 @@ Contents
 
   * *aspsms.py* a Python module for sending SMS over aspsms.com
   * *copy-inodes.py* helps extracting inodes from e2undel-output
-  * *gps2kml.py* parses gpsman-files and outputs kml, can also plot data
+  * *gps2kml.py* parses files from garmin-gps' and outputs kml, can also plot data
   * *keysign-challenge.py* a helper for creating per-recipient-UID encrypted challenges for keysigning
   * *rdf2graphviz.py* simple rdf to graphviz converter
 
