@@ -1,24 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+#
+# A helper for creating per-recipient-UID encrypted challenges for keysigning.
+#
+# Copyright (C) 2010,2013, Pascal Mainini <http://mainini.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Future improvments:
 # - make targets specifiable via cmd-line
-# - directly send mail, possible template:
-# 
-#Hello!
-#
-#we have recently (or not so) personally met and verified our keys
-#for keysigning. In order to sign your key, I need a proof that
-#the email-address on each uid of your key is valid and can be read
-#by you. Please decrypt the attached challenge(s) and send me
-#back the contained challenge-string in a signed mail.
-#I will not publish the signed key(s) but only send them back to you.
-#
-#Thanks and kind regards!
-#
-#Pascal
-#
+# - directly send mail, possible template
 
 import gpgme
 import subprocess
