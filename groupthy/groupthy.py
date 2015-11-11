@@ -25,7 +25,7 @@ import numbthy
 
 def generate(g, n):
     """Generate a (sub-)group using g as generator in modulus n"""
-    result = [1]
+    result = []
     for i in range(1,n):
         val = g ** i % n
         if val != None and val > 0:
@@ -68,6 +68,18 @@ def groupGenerateFull(n1, n2):
         for j in range(0,n2):
             result.append(groupGenerate((i,j),n1,n2))
     return result
+
+def safePrimeGenerate(n):
+    """Assuming that n is a safe-prime (q = (p-1)/2, q prime), this checks that indeed every value of 1 ... p-1 is a generator for Z_q"""
+    q = int((n-1) / 2)
+
+    print("\n<x^2> as generator for Z_q:\n")
+    for x in range(1,n):
+        print("%02d^2: %s" % (x, generate(x**2,q)))
+
+    print("\n<p-x^2> as generator for Z_p:\n")
+    for x in range(1,n):
+        print("%02d %02d-%02d: %s" % (x,n,(x**2)%n,generate((n-x**2)%n,n)))
 
 def multiplicativeInverse(a, n):
     """Efficiently calculate the multiplicative inverse using extended GCD algorithm"""
