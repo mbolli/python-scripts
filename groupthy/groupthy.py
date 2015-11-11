@@ -72,14 +72,28 @@ def groupGenerateFull(n1, n2):
 def safePrimeGenerate(n):
     """Assuming that n is a safe-prime (q = (p-1)/2, q prime), this checks that indeed every value of 1 ... p-1 is a generator for Z_q"""
     q = int((n-1) / 2)
+    print("\nq is %d" % q)
 
-    print("\n<x^2> as generator for Z_q:\n")
+    print("\n<x²> as generator for Z_q:\n")
     for x in range(1,n):
-        print("%02d^2: %s" % (x, generate(x**2,q)))
+        subgroup =  generate(x**2,n)
+        print("%02d², len %02d:\t%s" % (x, len(subgroup), subgroup))
 
-    print("\n<p-x^2> as generator for Z_p:\n")
+    print("\n<p-x²> as generator for Z_p:\n")
     for x in range(1,n):
-        print("%02d %02d-%02d: %s" % (x,n,(x**2)%n,generate((n-x**2)%n,n)))
+        subgroup =  generate((n-x**2)%n,n)
+        print("%02d (%02d-%02d²), len %02d:\t%s" % (n-x**2 % n, n, x, len(subgroup), subgroup))
+
+def schnorrGenerate(p, k):
+    """Calculate subgroups of Z*_p using Schnorr: p = kq + 1, p and q prime, Z*_p has a subgroup of order q"""
+    print("\nq is %d" % int((p-1)/k))
+    subgroup = []
+    for x in range(2, p):
+        g = x**k % p
+        subgroup.append(g)
+        if g == 1: break
+    subgroup = set(subgroup)
+    print("G_q, len %02d:\t%s\n" % (len(subgroup), subgroup))
 
 def multiplicativeInverse(a, n):
     """Efficiently calculate the multiplicative inverse using extended GCD algorithm"""
