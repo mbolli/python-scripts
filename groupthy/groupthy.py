@@ -52,14 +52,13 @@ def groupOp(pair1, pair2, n1, n2):
 def groupGenerate(generatorpair, n1, n2):
     """Generates a (sub-)group of G x H with G beeing multiplicative and H additive.
        The modulus of G is n1, of H it's n2."""
-    result = [(1,0)]
+    result = [generatorpair]
     pair = generatorpair
     while True:
         pair = groupOp(pair, generatorpair, n1, n2)
+        result.append(pair)
         if pair[0] == 1 and pair [1] == 0:
             return result
-        else:
-            result.append(pair)
 
 def groupGenerateFull(n1, n2):
     """Generates the full group G x H with the given moduli n1 for G and n2 for H"""
