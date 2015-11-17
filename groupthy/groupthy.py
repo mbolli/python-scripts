@@ -87,10 +87,9 @@ def schnorrGenerate(p, k):
     """Calculate subgroups of Z*_p using Schnorr: p = kq + 1, p and q prime, Z*_p has a subgroup of order q"""
     print("\nq is %d" % int((p-1)/k))
     subgroup = []
-    for x in range(2, p):
+    for x in range(1, p):
         g = x**k % p
         subgroup.append(g)
-        if g == 1: break
     subgroup = set(subgroup)
     print("G_q, len %02d:\t%s\n" % (len(subgroup), subgroup))
 
