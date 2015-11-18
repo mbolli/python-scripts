@@ -165,3 +165,34 @@ def pedersenOpen(n,g,h,m,r,c):
         return True
     else:
         return False
+
+########## ElGamal encryption ##########
+
+def elGamalCrypt(n,g,m,r,y):
+    """ElGamal-encrypt m using randomization r and pubkey y in modulo n with generator g"""
+    return ((g**r)%n,(m*y**r)%n)
+
+def elGamalDecrypt(n,g,e,x):
+    """ElGamal-decrypt e using private key x in modulo n with generator g"""
+    inv = multiplicativeInverse(e[0]**x, n)
+    return e[1] * inv % n
+
+def groupMul(pair1, pair2, n):
+    """Perform multiplication pairwise on two pairs, i.e. (a,b)x(c,d) = (a*c, b*d), modulo n"""
+    return (pair1[0]*pair2[0] % n, pair1[1]*pair2[1] % n)
+
+def groupInverse(pair, n):
+    """Find the inverse of a pair"""
+    return (multiplicativeInverse(pair[0],n), multiplicativeInverse(pair[1],n))
+
+def exercise4_1(n=23, g=2, x=3, y=8):
+    """Perform calculations from exercise 4.1"""
+    e1 = elGamalCrypt(n,g,2,3,y)
+    e2 = elGamalCrypt(n,g,13,2,y)
+
+    print("\ne1 = encrypt8(2,3) = %s" % str(e1))
+    print("e2 = encrypt8(13,2) = %s" % str(e2))
+    print("decrypt3(e1) = decrypt3(%s) = %s" % (str(e1), str(elGamalDecrypt(n,g,e1,x))))
+    print("decrypt3(e1*e2) = decrypt3(%s) = %s" % (str(groupMul(e1,e2,n)), str(elGamalDecrypt(n,g,groupMul(e1,e2,n),x))))
+    print("decrypt3(e1/e2) = decrypt3(e1*e2^{-1}) = decrypt3(%s*%s) = decrypt3(%s) = %s" % (str(e1), str(groupInverse(e2,n)), str(groupMul(e1,groupInverse(e2,n),n)), str(elGamalDecrypt(n,g,groupMul(e1,groupInverse(e2,n),n),x))))
+    print("decrypt3((e1)^3) = decrypt3(%s) = %s" % (str(groupMul(e1,groupMul(e1,e1,n),n)), str(elGamalDecrypt(n,g,groupMul(e1,groupMul(e1,e1,n),n),x))))
