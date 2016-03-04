@@ -4,7 +4,7 @@ This is a collection of small python scripts and other stuff I wrote with no par
 
 Contents
 ========
-- exercises: various crypto-related exercises for school
+- exercises: various crypto-related exercises for the course "Applied Cryptography" at Bern University of Applied Sciences.
 
 Credits
 =======

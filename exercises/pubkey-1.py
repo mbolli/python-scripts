@@ -48,9 +48,10 @@ def breakdiffiehellman(p, g, A, B):
     print "Exercise 2: Brute-force attempt to break Diffie-Hellman"
     print "-------------------------------------------------------"
     print "p: " + str(p) + " g: " + str(g) + " A: " + str(A) + " B: " + str(B)
-    for num in range(0,p):
-        if (g**num)%p == A:
-            print "FOUND! " + str(g) + "^" + str(num) + "%" + str(p) + " = " + str(A) + " -- the key is " + str(num) + "\n"
+    for num in range(0,p-1):
+        if (g**num)%p == B:
+            key = str((A**num)%p)
+            print "FOUND! " + str(g) + "^" + str(num) + "%" + str(p) + " = " + str(A) + " -- the key is " + key + "\n"
             return
         else:
             print "NOPE: " + str(g) + "^" + str(num) + "%" + str(p) + " != " + str(A)
