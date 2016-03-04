@@ -25,9 +25,9 @@ from random import randint
 def diffiehellman(p, g):
     print "Exercise 1: Diffie-Hellman key-exchange"
     print "---------------------------------------"
-    a = randint(0,p-2)
+    a = randint(0,p-1)
     A = (g**a)%p
-    b = randint(0,p-2)
+    b = randint(0,p-1)
     B = (g**b)%p
     kA = (B**a)%p
     kB = (A**b)%p
@@ -42,7 +42,7 @@ def diffiehellman(p, g):
     print "Bob computes k = " + str(kB)
     print "\n"
 
-diffiehellman(11, 6)
+diffiehellman(11, 2)
 
 def breakdiffiehellman(p, g, A, B):
     print "Exercise 2: Brute-force attempt to break Diffie-Hellman"

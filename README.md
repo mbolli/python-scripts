@@ -8,5 +8,5 @@ Contents
 
 Credits
 =======
-groupthy.py: Copyright (C) 2015, Pascal Mainini <http://mainini.ch> under GNU General Public License
-numbthy.py: Copyright (C) 2014, Robert Campbell <campbell@math.umbc.edu> under Simplified BSD License
+- groupthy.py: Copyright (C) 2015, Pascal Mainini <http://mainini.ch> under GNU General Public License
+- numbthy.py: Copyright (C) 2014, Robert Campbell <campbell@math.umbc.edu> under Simplified BSD License
