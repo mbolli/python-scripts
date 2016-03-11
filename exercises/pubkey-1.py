@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Some small exercises for playing around with rypto stuff.
+# Some small exercises for playing around with crypto stuff.
 # DON'T USE FOR ANY SERIOUS CRYPTOGRAPHIC PURPOSES!
 #
 # Copyright (C) 2016, Michael Bolli <http://bolli.us>
@@ -85,8 +85,3 @@ def primitiveroots(p, maxX, maxY):
             else: print "\t|",
 
 primitiveroots(11,10,9)
-
-def maninthemiddle(pk):
-    print "Exercise 4: MITM-Attack if public key is transmitted over insecure channel"
-    print "--------------------------------------------------------------------------"
-    print "NOPE"
