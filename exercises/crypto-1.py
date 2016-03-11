@@ -96,7 +96,9 @@ def break_transposition():
 	print "\n\n" + " ".join(cyphertext_a)
 	for i, l in enumerate(cyphertext_a):
 		id = i+diff[(i%modulo)]
-		print "(" + str(id) + "+" + str(diff[(i%modulo)]) + ")",
-		print cyphertext_a[id],
+		if id < len(cyphertext_a):
+			print cyphertext_a[id],
+		else:
+			print cyphertext_a[i],
 
 break_transposition()
