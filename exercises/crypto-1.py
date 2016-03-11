@@ -58,4 +58,45 @@ def analyze_frequency(textfile):
 	# recursively work through the text
 	analyze_frequency(textfile)
 
-analyze_frequency("crypto-1.txt")
+#analyze_frequency("crypto-1.txt")
+
+# Breaking transposition ciphers with chosen plaintext attack
+def break_transposition():
+	cleartext_a = "abcdefghijklmnopqrstuvwxyz"
+	cyphertext_a = "cadbehfigjmknlorpsqtwuxvyz"
+	replace = collections.defaultdict(str)
+	diff = collections.defaultdict(int)
+	modulo = 0
+
+	# save cleartext/cyphertext allocation
+	for i, l in enumerate(cleartext_a):
+		replace[i] = cyphertext_a.index(l)
+
+	# try to find repeating blocks while saving difference
+	for i, l in enumerate(replace):
+		print replace[i]-l,
+		diff[i] = replace[i]-l
+		if diff[0] == replace[i]-l: # found loop/block length?
+			if modulo != 0: # re-test modulo validity
+				if i%modulo == 0:
+					print "ok! modulo candidate verified: " + str(modulo),
+				else:
+					modulo = i
+					print "not ok! new modulo candidate: " + str(i)
+			else:
+				modulo = i
+			print " -- " + str(i) + "%" + str(modulo) + "\n"
+
+	# output needed allocation
+	print "\n\nAllocation: "
+	for i in range(0,modulo):
+		print diff[i],
+
+	# decode cyphertext
+	print "\n\n" + " ".join(cyphertext_a)
+	for i, l in enumerate(cyphertext_a):
+		id = i+diff[(i%modulo)]
+		print "(" + str(id) + "+" + str(diff[(i%modulo)]) + ")",
+		print cyphertext_a[id],
+
+break_transposition()
