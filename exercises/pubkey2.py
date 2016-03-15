@@ -20,6 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from groupthy.numbthy import *
+from exercises.pubkey1 import primitiveroots
 from math import log, floor
 from decimal import Decimal
 
@@ -46,6 +47,24 @@ estimateprimes(2**1024, (2**1025)-1)
 chanceofprime(2**1024)
 
 def primefactors(p):
-	print str(p) + " has the following prime factors:", factor(p)
+	print str(p) + " has the following prime factors:", prime_divisors(p)
 
 primefactors(41140)
+
+def eulertotient(min, max):
+	for i in range(min, max):
+		print i, ": euler totient =", euler_phi(i)
+
+eulertotient(11, 20)
+eulertotient(41140, 41141)
+
+def eulerstheorem(n):
+	for a in range(0, 100):
+		if gcd(a, n) == 1:
+			print a, "**", euler_phi(n), "mod", n, "=", a**euler_phi(n) % n
+
+eulerstheorem(9)
+eulerstheorem(10)
+
+primitiveroots(7, 6, 5)
+primitiveroots(8, 7, 6)
