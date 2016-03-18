@@ -24,6 +24,8 @@ from exercises.pubkey1 import primitiveroots
 from math import log, floor
 from decimal import Decimal
 
+# 1024 bit numbers have about 1/1000 prime numbers
+# 2048 bit numbers have about 1/2000 prime numbersr
 def estimateprimes(min, max):
 	minprimes = Decimal(min)/Decimal(log(min)-1)
 	maxprimes = Decimal(max)/Decimal(log(max)-1)
@@ -32,7 +34,7 @@ def estimateprimes(min, max):
 	return estimated
 
 def chanceofprime(p):
-	print "\nChance of prime " + str(p) + " is " + str(1/log(p,10)) + "."
+	print "\nChance of prime " + str(p) + " is " + str(1/log(p)) + "."
 
 def findprimes(min, max):
 	estimated = estimateprimes(min, max)
@@ -40,31 +42,47 @@ def findprimes(min, max):
 	for i in range(min, max):
 		if is_prime(i):
 			count += 1
-	print str(count) + " primes found."
+	print count, " primes found."
 
+# Exercise 1: Estimate the number of primes in the range between 1000 and 10000.
 findprimes(1000,10000)
-estimateprimes(2**1024, (2**1025)-1)
-chanceofprime(2**1024)
+
+# Exercise 1 cont.: Estimate the number of 1024-bit primes (leftmost bit set to 1) and the probability that a random 1024-bit integer is prime.
+estimateprimes(2**1023, (2**1024)-1)
+chanceofprime(2**1023)
 
 def primefactors(p):
 	print str(p) + " has the following prime factors:", prime_divisors(p)
 
+# Exercise 2: Compute the prime factors of 41140.
 primefactors(41140)
 
 def eulertotient(min, max):
 	for i in range(min, max):
 		print i, ": euler totient =", euler_phi(i)
 
-eulertotient(11, 20)
-eulertotient(41140, 41141)
+def eulertotient_alt(num):
+	for i in prime_divisors(num):
+		num *= 1-i**-1
+		print num
 
+# Exercise 3: Compute corresponding values of Euler's totient function (n) for n = 11; 12; ... ; 20.
+eulertotient(11, 20)
+
+# Exercise 3 cont.: Compute ϕ(41140).
+eulertotient(41140, 41141)
+eulertotient_alt(41140)
+
+# generalization of fermat's theorem: a^(phi(n)) == 1 mod n
 def eulerstheorem(n):
-	for a in range(0, 100):
+	for a in range(0, n):
 		if gcd(a, n) == 1:
 			print a, "**", euler_phi(n), "mod", n, "=", a**euler_phi(n) % n
 
+# Exercise 4: Check that Euler's theorem holds for n = 9 and n = 10.
 eulerstheorem(9)
 eulerstheorem(10)
 
+# Exercise 5: Determine the primitive roots modulo n for n = 7 and n = 8.
 primitiveroots(7, 6, 5)
 primitiveroots(8, 7, 6)

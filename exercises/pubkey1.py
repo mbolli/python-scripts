@@ -58,6 +58,7 @@ def breakdiffiehellman(p, g, A, B):
 
 breakdiffiehellman(11, 6, 7, 5)
 
+# primitive roots modulo n exist for n=2, n=4, n=p**k and n=2p**k, where p>2 is prime and k >= 1
 def primitiveroots(p, maxX, maxY):
     print "Exercise 3: Find primitive roots in output"
     print "------------------------------------------"
