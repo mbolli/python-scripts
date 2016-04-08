@@ -67,3 +67,42 @@ integers such that u is odd and n - 1 = (2**r)*u. Use it to generate the n small
 findprime(222)
 
 """Algorithm and Extended Algorithm of Euclid: Compute Euclid(48; 174), ExtEuclid(48; 174), and MultInv(48; 127)."""
+def euclid(a,b):
+	r = b%a
+	if r == 0:
+		return a
+	else:
+		return euclid(r,a)
+
+print "Euclid:", euclid(48,174)
+
+def extEuclid(a,b):
+	r = b%a
+	q = b/a
+	if r == 0:
+		return a, 1, 0
+	else:
+		(d, X, Y) = extEuclid(r,a)
+		print d, X, Y
+		return d, Y-X*q, X
+
+print "extEuclid:", extEuclid(48, 174)
+
+def multInv(a, n):
+	d,X,Y = extEuclid(a,n)
+	return X
+
+print "multInv:", multInv(48,127)
+
+def modExp(x, y, n):
+	m = 1
+	while y != 0:
+		if y%2 == 0:
+			x = x*x % n
+			y /= 2
+		else:
+			m = m*x % n
+			y -= 1
+	return m
+print "modPow:", power_mod(3, 37, 13)
+print "modExp:", modExp(3, 37, 13)
