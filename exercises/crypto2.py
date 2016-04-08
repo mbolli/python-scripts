@@ -20,7 +20,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from groupthy.numbthy import *
-from exercises.pubkey1 import primitiveroots
+from groupthy.groupthy import *
+from exercises.crypto1 import primitiveroots
 from math import log, floor
 from decimal import Decimal
 
@@ -86,3 +87,31 @@ eulerstheorem(10)
 # Exercise 5: Determine the primitive roots modulo n for n = 7 and n = 8.
 primitiveroots(7, 6, 5)
 primitiveroots(8, 7, 6)
+
+# Exercise 6: Determine the sets ℤ*6, ℤ*7, ℤ*8, ℤ*9, ℤ*10, ℤ*12, ℤ*13, ℤ*14. Draw a multiplication table for ℤ*9 and determine corresponding pairs of inverse elements.
+print generateFull(6)
+print generateFull(7)
+print generateFull(8)
+print generateFull(9)
+print generateFull(10)
+print generateFull(12)
+print generateFull(13)
+print generateFull(14), "\n"
+
+for i in range(0,9):
+	for j in range(0,9):
+		print (i*j) % 9,
+	print ""
+print "\n"
+
+print allMultiplicativeInverse(9), "\n"
+
+# Exercise 7: Determine all the subgroups of (ℤ*9;✕n;^-1,1) and check if Lagrange's theorem holds. Determine the generators of ℤ*9.
+print testLagrange(9)
+print prettyPrint(generateFull(9))
+print safePrimeGenerate(9)
+print safePrimeGenerate(13)
+
+
+# Exercise 8: Write a Java method boolean isGenerator(int g, int p), which checks for a safe prime p = 2q + 1 if g is a generator of Gq. Test your solution for p = 23.
+print safePrimeGenerate(23)
